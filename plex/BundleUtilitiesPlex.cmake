@@ -162,6 +162,13 @@
 get_filename_component(BundleUtilities_cmake_dir "${CMAKE_CURRENT_LIST_FILE}" PATH)
 include("/usr/local/share/cmake/Modules/GetPrerequisites.cmake")
 
+function(is_file_executable file result_var)
+  if(file MATCHES "PlexHomeTheater$")
+    set(${result_var} 1 PARENT_SCOPE)
+    return()
+  endif(file MATCHES "PlexHomeTheater$")
+  _is_file_executable(${file} ${result_var})
+endfunction(is_file_executable file result_var)
 
 function(get_bundle_main_executable bundle result_var)
   set(result "error: '${bundle}/Contents/Info.plist' file does not exist")

@@ -22,7 +22,7 @@
 #import <BackRow/BackRow.h>
 #import "IOSEAGLView.h"
 #import "IOSSCreenManager.h"
-#include "XBMC_keysym.h"
+#include "input/XBMC_keysym.h"
 
 @interface XBMCController : BRController
 {

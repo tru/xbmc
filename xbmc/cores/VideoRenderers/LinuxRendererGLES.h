@@ -159,6 +159,10 @@ public:
   virtual void         AddProcessor(struct __CVBuffer *cvBufferRef);
 #endif
 
+  /* PLEX */
+  virtual void SetRGB32Image(const char *image, int nHeight, int nWidth, int nPitch) {}
+  /* END PLEX */
+
 protected:
   virtual void Render(DWORD flags, int index);
 

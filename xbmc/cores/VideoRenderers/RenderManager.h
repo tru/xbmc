@@ -30,11 +30,15 @@
 #include "settings/VideoSettings.h"
 #include "OverlayRenderer.h"
 
+#include "system.h"
+
 /* PLEX */
-#ifdef TARGET_WINDOWS
-#include "cores/VideoRenderers/WinRenderer.h"
-#else
+#ifdef HAS_GL
 #include "cores/VideoRenderers/LinuxRendererGL.h"
+#elif HAS_GLES == 2
+#include "cores/VideoRenderers/LinuxRendererGLES.h"
+#elif defined(HAS_DX)
+#include "cores/VideoRenderers/WinRenderer.h"
 #endif
 /* END PLEX */
 

@@ -63,7 +63,11 @@
 static Class BRApplianceCategoryCls;
 
 // category for ios5.x and higher is just a short text before xbmc auto starts
+#ifndef __PLEX__
 #define XBMCAppliance_CAT_5andhigher [BRApplianceCategoryCls categoryWithName:@"XBMC is starting..." identifier:@"xbmc" preferredOrder:0]
+#else
+#define XBMCAppliance_CAT_5andhigher [BRApplianceCategoryCls categoryWithName:@"Plex/HT is starting..." identifier:@"plexht" preferredOrder:0]
+#endif
 // category for ios4.x is the menu entry
 #define XBMCAppliance_CAT_4 [BRApplianceCategoryCls categoryWithName:@"XBMC" identifier:@"xbmc" preferredOrder:0]
 
@@ -171,7 +175,11 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
   {
     Class cls = objc_getClass("BRImage");
     BRImageControl *imageControl = (BRImageControl *)MSHookIvar<id>(topShelf, "_productImage");// hook the productImage so we can diddle with it
+#ifndef __PLEX__
     BRImage *gpImage = [cls imageWithPath:[[NSBundle bundleForClass:[XBMCATV2Detector class]] pathForResource:@"XBMC" ofType:@"png"]];
+#else
+    BRImage *gpImage = [cls imageWithPath:[[NSBundle bundleForClass:[XBMCATV2Detector class]] pathForResource:@"PlexHT" ofType:@"png"]];
+#endif
     [imageControl setImage:gpImage];
   }
 
@@ -196,7 +204,11 @@ static id (*XBMCAppliance$applianceInfo$Orig)(XBMCAppliance*, SEL);
   BRImageControl *imageControl = (BRImageControl *)MSHookIvar<id>(mainMenuImageControl, "_content");// hook the image so we can diddle with it
   
   // load our logo into it
+#ifndef __PLEX__
   BRImage *gpImage = [BRImageCls imageWithPath:[[NSBundle bundleForClass:[XBMCATV2Detector class]] pathForResource:@"XBMC" ofType:@"png"]];
+#else
+  BRImage *gpImage = [BRImageCls imageWithPath:[[NSBundle bundleForClass:[XBMCATV2Detector class]] pathForResource:@"PlexHT" ofType:@"png"]];
+#endif
   [imageControl setImage:gpImage];
   return topShelf;
 }
@@ -285,7 +297,11 @@ static id XBMCAppliance$init(XBMCAppliance* self, SEL _cmd)
 
 static id XBMCAppliance$identifierForContentAlias(XBMCAppliance* self, SEL _cmd, id contentAlias)
 {
+#ifndef __PLEX__
   return@"xbmc";
+#else
+  return @"plexht";
+#endif
 }
 
 static BOOL XBMCAppliance$handleObjectSelection(XBMCAppliance* self, SEL _cmd, id fp8, id fp12)
@@ -370,7 +386,11 @@ static id XBMCAppliance$controllerForIdentifier(XBMCAppliance* self, SEL _cmd, i
   //NSLog(@"%s", __PRETTY_FUNCTION__);
   id menuController = nil;
   Class cls = objc_getClass("BRApplication");
+#ifndef __PLEX__
   if ([identifier isEqualToString:@"xbmc"])
+#else
+  if ([identifier isEqualToString:@"plexht"])
+#endif
   {
     [self XBMCfixUIDevice];
     menuController = [[objc_getClass("XBMCController") alloc] init];

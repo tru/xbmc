@@ -81,6 +81,7 @@ void NetworkInterface::WatchForChanges()
   // Get the initial list.
   NotifyOfNetworkChange();
   
+#ifndef TARGET_DARWIN_IOS
   SCDynamicStoreRef store    = SCDynamicStoreCreate(NULL, CFSTR("Plex:WatchForNetworkChanges"), NetworkChanged, 0);
   CFMutableArrayRef keys     = CFArrayCreateMutable(NULL, 0, &kCFTypeArrayCallBacks);
   CFMutableArrayRef patterns = CFArrayCreateMutable(NULL, 0, &kCFTypeArrayCallBacks);
@@ -126,6 +127,8 @@ void NetworkInterface::WatchForChanges()
   
   CFRelease(patterns);
   CFRelease(keys);
+#endif
+
 }
 
 #endif

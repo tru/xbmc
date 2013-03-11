@@ -282,7 +282,7 @@ static void XBMCController$setSystemSleepTimeout(XBMCController* self, SEL _cmd,
 
 static void XBMCController$applicationDidExit(XBMCController* self, SEL _cmd) 
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
 
   [[self glView] stopAnimation];
   [self enableScreenSaver];
@@ -292,21 +292,21 @@ static void XBMCController$applicationDidExit(XBMCController* self, SEL _cmd)
 
 static void XBMCController$initDisplayLink(XBMCController* self, SEL _cmd) 
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
 
   [[self glView] initDisplayLink];
 }
 
 static void XBMCController$deinitDisplayLink(XBMCController* self, SEL _cmd) 
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
 
   [[self glView] deinitDisplayLink];
 }
 
 static double XBMCController$getDisplayLinkFPS(XBMCController* self, SEL _cmd) 
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
 
   return [[self glView] getDisplayLinkFPS];
 }
@@ -326,8 +326,8 @@ static CGSize XBMCController$getScreenSize(XBMCController* self, SEL _cmd)
   CGSize screensize;
   screensize.width  = [BRWindowCls interfaceFrame].size.width;
   screensize.height = [BRWindowCls interfaceFrame].size.height;
-  //NSLog(@"%s UpdateResolutions width=%f, height=%f", 
-  //__PRETTY_FUNCTION__, screensize.width, screensize.height);
+  NSLog(@"%s UpdateResolutions width=%f, height=%f",
+  __PRETTY_FUNCTION__, screensize.width, screensize.height);
   return screensize;
 }
 
@@ -341,7 +341,7 @@ static id XBMCController$init(XBMCController* self, SEL _cmd)
 {
   if((self = XBMCController$init$Orig(self, _cmd)) != nil)  
   {
-    //NSLog(@"%s", __PRETTY_FUNCTION__);
+    NSLog(@"%s", __PRETTY_FUNCTION__);
 
     NSNotificationCenter *center;
     // first the default notification center, which is all
@@ -364,7 +364,7 @@ static id XBMCController$init(XBMCController* self, SEL _cmd)
 
 static void XBMCController$dealloc(XBMCController* self, SEL _cmd) 
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
   [[self glView] stopAnimation];
   [[self glView] release];
 
@@ -378,7 +378,7 @@ static void XBMCController$dealloc(XBMCController* self, SEL _cmd)
 
 static void XBMCController$controlWasActivated(XBMCController* self, SEL _cmd) 
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
 
   XBMCController$controlWasActivated$Orig(self, _cmd);
 
@@ -407,7 +407,7 @@ static void XBMCController$controlWasDeactivated(XBMCController* self, SEL _cmd)
 
 static BOOL XBMCController$recreateOnReselect(XBMCController* self, SEL _cmd) 
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
   return YES;
 }
 
@@ -677,7 +677,7 @@ static void XBMCController$setUserEvent(XBMCController* self, SEL _cmd, int even
 
 static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent* event) 
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
 
   if ([[self glView] isAnimating])
   {
@@ -706,7 +706,7 @@ static BOOL XBMCController$brEventAction(XBMCController* self, SEL _cmd, BREvent
           //unichar c = [key_nsstring characterAtIndex:0];
           //keyEvent = translateCocoaToXBMCEvent(c);
           const char* wstr = [key_nsstring cStringUsingEncoding:NSUTF16StringEncoding];
-          //NSLog(@"%s, key: wstr[0] = %d, wstr[1] = %d", __PRETTY_FUNCTION__, wstr[0], wstr[1]);
+          NSLog(@"%s, key: wstr[0] = %d, wstr[1] = %d", __PRETTY_FUNCTION__, wstr[0], wstr[1]);
 
           if (wstr[0] != 92) 
           {
@@ -814,7 +814,7 @@ static void XBMCController$keyPressTimerCallback(XBMCController* self, SEL _cmd,
 
 static void XBMCController$observeDefaultCenterStuff(XBMCController* self, SEL _cmd, NSNotification * notification) 
 {
-  //NSLog(@"default: %@", [notification name]);
+  NSLog(@"default: %@", [notification name]);
 
   if ([notification name] == UIApplicationDidReceiveMemoryWarningNotification)
     NSLog(@"XBMC: %@", [notification name]);
@@ -848,7 +848,7 @@ static void XBMCController$enableSystemSleep(XBMCController* self, SEL _cmd)
 
 static void XBMCController$disableScreenSaver(XBMCController* self, SEL _cmd) 
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
   //store screen saver state and disable it
 
   Class ATVSettingsFacadeCls = objc_getClass("ATVSettingsFacade");
@@ -865,7 +865,7 @@ static void XBMCController$disableScreenSaver(XBMCController* self, SEL _cmd)
 
 static void XBMCController$enableScreenSaver(XBMCController* self, SEL _cmd) 
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
   //reset screen saver to user settings
   Class ATVSettingsFacadeCls = objc_getClass("ATVSettingsFacade");
 

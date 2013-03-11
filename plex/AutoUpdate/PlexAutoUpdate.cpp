@@ -9,6 +9,8 @@
 #include "PlexAutoUpdate.h"
 #include <boost/foreach.hpp>
 
+#include "plex/PlexUtils.h"
+
 #ifdef __APPLE__
 #include "Mac/PlexAutoUpdateMac.h"
 #endif
@@ -24,7 +26,7 @@ CPlexAutoUpdate::CPlexAutoUpdate(const std::string &updateUrl, int searchFrequen
   m_currentVersion(PLEX_VERSION)
 {
   m_functions = new CAutoUpdateFunctionsXBMC(this);
-#ifdef __APPLE__
+#ifdef TARGET_DARWIN_OSX
   m_installer = new CPlexAutoUpdateInstallerMac(m_functions);
 #elif defined(TARGET_WINDOWS)
   m_installer = new CPlexAutoUpdateInstallerWin(m_functions);
@@ -66,13 +68,7 @@ bool CPlexAutoUpdate::DownloadNewVersion()
 
 std::string CPlexAutoUpdate::GetOsName() const
 {
-#ifdef TARGET_DARWIN_OSX
-  return "osx";
-#elif defined(TARGET_WINDOWS)
-  return "windows";
-#elif defined(TARGET_LINUX)
-  return "linux";
-#endif
+  return PlexUtils::GetMachinePlatform();
 }
 
 bool CPlexAutoUpdate::_CheckForNewVersion()

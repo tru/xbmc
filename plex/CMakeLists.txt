@@ -39,7 +39,7 @@ list(APPEND plex_SRCS Resources/Plex.rc)
 list(APPEND plex_SRCS Resources/Plex.rc2)
 
 set(Headers PlexTypes.h)
-if(NOT TARGET_OSX)
+if(NOT TARGET_COMMON_DARWIN)
   list(REMOVE_ITEM plex_SRCS ./PlexMacUtils.mm)
 endif(NOT TARGET_OSX)
 
@@ -52,21 +52,26 @@ set(PLEX_ALL_SRCS ${PLEX_MODULE_SRCS} ${plex_SRCS} ${Headers})
 
 ADD_MSVC_PRECOMPILED_HEADER("pch_plex.h" "pch_plex.cpp" PLEX_ALL_SRCS)
 
-if(TARGET_COMMON_DARWIN)
+if(TARGET_OSX)
   add_executable(${PLEX_TARGET_NAME} MACOSX_BUNDLE ${PLEX_ALL_SRCS})
   set_target_properties(${PLEX_TARGET_NAME} PROPERTIES MACOSX_BUNDLE_INFO_PLIST "${plexdir}/Resources/Info.plist.in")
   set(MACOSX_BUNDLE_LONG_VERSION_STRING "${PLEX_VERSION_STRING}")
   set(MACOSX_BUNDLE_SHORT_VERSION_STRING "${PLEX_VERSION_STRING_SHORT}")
   set(MACOSX_BUNDLE_BUNDLE_VERSION "${PLEX_VERSION_STRING}")
-else()
+elseif(TARGET_ATV2)
+  set(CMAKE_SHARED_MODULE_PREFIX "")
+  set(CMAKE_SHARED_MODULE_SUFFIX "")
+  set(CMAKE_MODULE_LINKER_FLAGS "-bundle -Wl,-headerpad_max_install_names -Wl,-undefined,dynamic_lookup -Wl,-read_only_relocs,suppress -Wl,-all_load")
+  add_library(${PLEX_TARGET_NAME} MODULE ${PLEX_ALL_SRCS})
+else(TARGET_OSX)
   add_executable(${PLEX_TARGET_NAME} WIN32 ${PLEX_ALL_SRCS})
-endif()
+endif(TARGET_OSX)
 
 # Set the correct binary name
 set_target_properties(${PLEX_TARGET_NAME} PROPERTIES OUTPUT_NAME ${EXECUTABLE_NAME})
 
 add_dependencies(${PLEX_TARGET_NAME} git_revision.h)
-target_link_libraries(${PLEX_TARGET_NAME} xbmc pcre ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
+target_link_libraries(${PLEX_TARGET_NAME} xbmc ${CONFIG_INTERNAL_LIBS} ${CONFIG_PLEX_LINK_LIBRARIES})
 
 if(ENABLE_PYTHON)
   target_link_libraries(${PLEX_TARGET_NAME} addons_python)
@@ -116,9 +121,9 @@ if(TARGET_COMMON_DARWIN OR TARGET_WIN32)
 endif()
 
 if(TARGET_COMMON_DARWIN)
-  install(TARGETS ${PLEX_TARGET_NAME} BUNDLE DESTINATION . COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/Plex.icns DESTINATION ${EXECUTABLE_NAME}.app/Contents/Resources COMPONENT RUNTIME)
-  install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${EXECUTABLE_NAME}.app/Contents/Resources COMPONENT RUNTIME)
+  install(TARGETS ${PLEX_TARGET_NAME} BUNDLE DESTINATION . LIBRARY DESTINATION ${BINPATH} COMPONENT RUNTIME)
+  install(FILES ${plexdir}/Resources/Plex.icns DESTINATION ${RESOURCEPATH}../ COMPONENT RUNTIME)
+  install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH}../ COMPONENT RUNTIME)
 else(TARGET_COMMON_DARWIN)
   install(TARGETS ${PLEX_TARGET_NAME} RUNTIME DESTINATION ${BINPATH} COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/Credits.html DESTINATION ${RESOURCEPATH} COMPONENT RUNTIME)
@@ -179,7 +184,10 @@ elseif(TARGET_WIN32)
   install(FILES ${root}/project/Win32BuildSetup/dependencies/glew32.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
   install(FILES ${root}/project/Win32BuildSetup/dependencies/libiconv-2.dll DESTINATION ${BINPATH} COMPONENT RUNTIME)
   install(FILES ${plexdir}/Resources/Plex.ico ${plexdir}/Resources/PlexBanner.bmp DESTINATION ${RESOURCEPATH}/media COMPONENT RUNTIME)
-endif()
+elseif(TARGET_ATV2)
+  install(FILES ${plexdir}/Resources/PlexATV2-Info.plist DESTINATION ${BINPATH} RENAME Info.plist)
+  install(FILES ${plexdir}/Resources/ATV-Icon.png DESTINATION ${BINPATH} RENAME AppIcon.png)
+endif(TARGET_OSX)
 
 if(TARGET_OSX)
   set(DSYM_FNAME "${EXECUTABLE_NAME}-${PLEX_VERSION_STRING}-${OSX_ARCH}.dSYM")
@@ -197,8 +205,16 @@ if(TARGET_OSX)
 endif()
 
 if(CREATE_BUNDLE)
-  if(TARGET_COMMON_DARWIN OR TARGET_WIN32)
+  if(TARGET_OSX OR TARGET_WIN32)
     install(SCRIPT ${CMAKE_BINARY_DIR}/plex/CMakeCompleteBundle.cmake COMPONENT RUNTIME)
+  elseif(TARGET_ATV2)
+    install(CODE
+      "
+      execute_process(
+        COMMAND ${plexdir}/scripts/fix_install_names_atv.sh ${dependdir}/lib ${CMAKE_INSTALL_PREFIX}
+      )
+      "
+    )
   endif()
   if(TARGET_OSX)
     add_custom_target(BundlingSymbol ALL DEPENDS Symbols)

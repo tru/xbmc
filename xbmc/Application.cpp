@@ -357,6 +357,9 @@
 #include "settings/GUISettings.h"
 /* END PLEX */
 
+#include "CocoaInterface.h"
+
+
 #if defined(TARGET_ANDROID)
 #include "android/activity/XBMCApp.h"
 #endif
@@ -654,7 +657,6 @@ bool CApplication::Create()
     inited = InitDirectoriesOSX();
   if (!inited)
     inited = InitDirectoriesWin32();
-
   // copy required files
   CopyUserDataIfNeeded("special://masterprofile/", "RssFeeds.xml");
   CopyUserDataIfNeeded("special://masterprofile/", "favourites.xml");
@@ -1188,8 +1190,8 @@ bool CApplication::InitDirectoriesOSX()
       CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Preferences/Plex/userdata");
     #else
       /* PLEX */
-      CSpecialProtocol::SetHomePath(userHome + "/Library/Preferences/Plex");
-      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Preferences/Plex/userdata");
+      CSpecialProtocol::SetHomePath(userHome + "/Library/Preferences/PlexHomeTheater");
+      CSpecialProtocol::SetMasterProfilePath(userHome + "/Library/Preferences/PlexHomeTheater/userdata");
       /* END PLEX */
     #endif
     #else
@@ -1206,7 +1208,7 @@ bool CApplication::InitDirectoriesOSX()
 #ifndef __PLEX__
       CStdString strTempPath = URIUtils::AddFileToFolder(userHome,  "Library/Preferences/XBMC/temp");
 #else
-      CStdString strTempPath = URIUtils::AddFileToFolder(userHome,  "Library/Preferences/" + PLEX_TARGET_NAME +"/temp");
+      CStdString strTempPath = URIUtils::AddFileToFolder(userHome,  "Library/Preferences/PlexHomeTheater/temp");
 #endif
     #else
 #ifndef __PLEX__

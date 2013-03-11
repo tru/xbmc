@@ -89,7 +89,9 @@ if(TARGET_WIN32)
 endif(TARGET_WIN32)
 
 # Build the texturepacker
-add_subdirectory(tools/TexturePacker)
+if(NOT TARGET_ATV2)
+  add_subdirectory(tools/TexturePacker)
+endif(NOT TARGET_ATV2)
 
 # add our visualizations
 add_subdirectory(xbmc/visualizations)

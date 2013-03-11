@@ -43,6 +43,4 @@ void _VerifyGLState(const char* szfile, const char* szfunction, int lineno);
 
 void LogGraphicsInfo();
 
-#ifdef HAS_GL
 int glFormatElementByteCount(GLenum format);
-#endif

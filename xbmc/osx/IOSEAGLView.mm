@@ -145,7 +145,7 @@
 //--------------------------------------------------------------
 - (id)initWithFrame:(CGRect)frame withScreen:(UIScreen *)screen
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
   framebufferResizeRequested = FALSE;
   if ((self = [super initWithFrame:frame]))
   {
@@ -188,7 +188,7 @@
 //--------------------------------------------------------------
 - (void) dealloc
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
   [self deleteFramebuffer];    
   [context release];
   
@@ -203,7 +203,7 @@
 //--------------------------------------------------------------
 - (void)setContext:(EAGLContext *)newContext
 {
-  //NSLog(@"%s", __PRETTY_FUNCTION__);
+  NSLog(@"%s", __PRETTY_FUNCTION__);
   if (context != newContext)
   {
     [self deleteFramebuffer];
@@ -220,7 +220,7 @@
 {
   if (context && !defaultFramebuffer)
   {
-    //NSLog(@"%s", __PRETTY_FUNCTION__);
+    NSLog(@"%s", __PRETTY_FUNCTION__);
     [EAGLContext setCurrentContext:context];
     
     // Create default framebuffer object.
@@ -249,7 +249,7 @@
 {
   if (context && !pause)
   {
-    //NSLog(@"%s", __PRETTY_FUNCTION__);
+    NSLog(@"%s", __PRETTY_FUNCTION__);
     [EAGLContext setCurrentContext:context];
     
     if (defaultFramebuffer)
@@ -276,6 +276,7 @@
 {
   if (context && !pause)
   {
+    NSLog(@"%s", __PRETTY_FUNCTION__);
     if ([EAGLContext currentContext] != context)
       [EAGLContext setCurrentContext:context];
     
@@ -323,6 +324,7 @@
 {
 	if (!animating && context)
 	{
+    NSLog(@"%s", __PRETTY_FUNCTION__);
 		animating = TRUE;
     CWinEventsIOS::Init();
 
@@ -381,7 +383,9 @@
 
   setlocale(LC_NUMERIC, "C");
  
+  NSLog(@"%s doing preflight", __PRETTY_FUNCTION__);
   g_application.Preflight();
+  NSLog(@"%s doing create", __PRETTY_FUNCTION__);
   if (!g_application.Create())
   {
     readyToRun = false;

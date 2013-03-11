@@ -2,7 +2,7 @@ add_subdirectory(libsquish)
 add_subdirectory(libhts)
 add_subdirectory(libUPnP)
 
-if(ENABLE_DVD_DRIVE)
+if(ENABLE_DVD_DRIVE AND NOT TARGET_ATV2)
   add_subdirectory(libdvd)
 endif()
 
