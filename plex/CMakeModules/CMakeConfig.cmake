@@ -1,10 +1,10 @@
 set(PLEX_TARGET_NAME PlexHomeTheater)
 
-set(CONFIG_INTERNAL_LIBS
-  lib_hts
-  lib_squish
-  lib_upnp
-)
+if(NOT DEFINED TARGET_ARCH)
+  set(TARGET_ARCH ${CMAKE_SYSTEM_PROCESSOR})
+endif(NOT DEFINED TARGET_ARCH)
+
+set(NATIVE_ARCH ${CMAKE_SYSTEM_PROCESSOR})
 
 OPTION(ENABLE_DVD_DRIVE "Enable the DVD drive" ON)
 OPTION(ENABLE_PYTHON "Enable Python addon support" OFF)
@@ -45,11 +45,20 @@ else()
   message(FATAL_ERROR "Unknown platform target ${TARGET_PLATFORM}")
 endif()
 
+
 set(TARGET_PLATFORM ${TARGET_PLATFORM} CACHE STRING "Platform string")
 
 message(STATUS "Building for target ${TARGET_PLATFORM}")
 
 include(PlatformConfig${TARGET_PLATFORM})
+
+message(STATUS "Native architecture: ${NATIVE_ARCH} - Target architecture: ${TARGET_ARCH}")
+
+set(CONFIG_INTERNAL_LIBS
+  lib_hts
+  lib_squish-${TARGET_ARCH}
+  lib_upnp
+)
 
 if(TARGET_POSIX)
   include(PlatformConfigPOSIX)
@@ -91,20 +100,18 @@ configure_file(${root}/xbmc/DllPaths_generated.h.in ${CMAKE_BINARY_DIR}/xbmc/Dll
 configure_file(${plexdir}/config.h.in ${CMAKE_BINARY_DIR}/xbmc/config.h)
 set_source_files_properties(xbmc/config.h PROPERTIES GENERATED TRUE)
 
-if(NOT TARGET_ATV2)
-  find_package(SSE)
-  if(NOT TARGET_WIN32)
-    if(SSSE3_FOUND)
-      set(CMAKE_SSE_CFLAGS "-mssse3")
-    elseif(SSE3_FOUND)
-      set(CMAKE_SSE_CFLAGS "-msse3")
-    elseif(SSE2_FOUND)
-      set(CMAKE_SSE_CFLAGS "-msse2")
-    endif(SSSE3_FOUND)
-  else(NOT TARGET_WIN32)
-    set(CMAKE_SSE_CFLAGS "/arch:SSE2")
-  endif(NOT TARGET_WIN32)
-endif(NOT TARGET_ATV2)
+find_package(SSE)
+if(NOT TARGET_WIN32)
+  if(SSSE3_FOUND)
+    set(CMAKE_SSE_CFLAGS "-mssse3")
+  elseif(SSE3_FOUND)
+    set(CMAKE_SSE_CFLAGS "-msse3")
+  elseif(SSE2_FOUND)
+    set(CMAKE_SSE_CFLAGS "-msse2")
+  endif(SSSE3_FOUND)
+else(NOT TARGET_WIN32)
+  set(CMAKE_SSE_CFLAGS "/arch:SSE2")
+endif(NOT TARGET_WIN32)
 
 message(STATUS "-- Configuration Summary:")
 message(STATUS "Enable DVD drive: " ${ENABLE_DVD_DRIVE})

@@ -1,17 +1,13 @@
 # vim: setlocal syntax=cmake:
 
-if(NOT DEFINED OSX_ARCH)
-  set(OSX_ARCH i386)
-endif()
-
-if(NOT OSX_ARCH STREQUAL "i386" AND NOT OSX_ARCH STREQUAL "x86_64")
-  message(FATAL_ERROR "Architecture ${OSX_ARCH} is not supported")
-endif()
+if(NOT TARGET_ARCH STREQUAL "i386" AND NOT TARGET_ARCH STREQUAL "x86_64")
+  message(FATAL_ERROR "Architecture ${TARGET_ARCH} is not supported")
+endif(NOT TARGET_ARCH STREQUAL "i386" AND NOT TARGET_ARCH STREQUAL "x86_64")
 
 find_package(OSXSDK)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -arch ${OSX_ARCH}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch ${OSX_ARCH}")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -arch ${TARGET_ARCH}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch ${TARGET_ARCH}")
 
 # we will test that our compiler handles the arch
 if(NOT CMAKE_C_FLAGS STREQUAL BASIC_COMPILE_TEST_FLAGS)
@@ -168,14 +164,14 @@ set(EXECUTABLE_NAME "Plex Home Theater")
 set(ARCH "x86-osx")
 
 set(LIBPATH "${EXECUTABLE_NAME}.app/Contents/Frameworks")
-set(BINPATH "${EXECUTABLE_NAME}.app/Contents/MacOSX")
+set(BINPATH "${EXECUTABLE_NAME}.app/Contents/MacOS")
 set(RESOURCEPATH "${EXECUTABLE_NAME}.app/Contents/Resources/XBMC")
 set(FFMPEG_INCLUDE_DIRS ${ffmpegdir}/include)
 
-set(PLEX_LINK_WRAPPED "-arch ${OSX_ARCH} -undefined dynamic_lookup -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
-if(OSX_ARCH STREQUAL "i386")
+set(PLEX_LINK_WRAPPED "-arch ${TARGET_ARCH} -undefined dynamic_lookup -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
+if(TARGET_ARCH STREQUAL "i386")
   set(PLEX_LINK_WRAPPED "${PLEX_LINK_WRAPPED} -read_only_relocs suppress")
-endif(OSX_ARCH STREQUAL "i386")
+endif(TARGET_ARCH STREQUAL "i386")
 
 set(HAVE_LIBVDADECODER 1)
 set(AC_APPLE_UNIVERSAL_BUILD 0)

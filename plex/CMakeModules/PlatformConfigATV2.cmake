@@ -1,6 +1,7 @@
 # vim: setlocal syntax=cmake:
 
-set(OSX_ARCH armv7)
+unset(TARGET_ARCH CACHE)
+set(TARGET_ARCH armv7 CACHE STRING "")
 
 find_package(OSXSDK)
 if(NOT HAVE_IPHONEOS_SDK)
@@ -12,9 +13,9 @@ if(NOT DEFINED IPHONEOS_SDK)
    set(IPHONEOS_SDK ${IPHONEOS_SDK_PATH})
 endif()
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -arch ${OSX_ARCH} -miphoneos-version-min=4.2 -isysroot ${IPHONEOS_SDK}")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch ${OSX_ARCH} -miphoneos-version-min=4.2 -isysroot ${IPHONEOS_SDK}")
-set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -arch ${OSX_ARCH} -miphoneos-version-min=4.2" CACHE STRING "Assembler flags")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -arch ${TARGET_ARCH} -miphoneos-version-min=4.2 -isysroot ${IPHONEOS_SDK}")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -arch ${TARGET_ARCH} -miphoneos-version-min=4.2 -isysroot ${IPHONEOS_SDK}")
+set(CMAKE_ASM_FLAGS "${CMAKE_ASM_FLAGS} -arch ${TARGET_ARCH} -miphoneos-version-min=4.2" CACHE STRING "Assembler flags")
 
 include(CheckCSourceCompiles)
 CHECK_C_SOURCE_COMPILES("
@@ -154,7 +155,7 @@ set(BINPATH "${EXECUTABLE_NAME}.frappliance/")
 set(RESOURCEPATH "${EXECUTABLE_NAME}.frappliance/XBMCData/XBMCHome")
 set(FFMPEG_INCLUDE_DIRS ${ffmpegdir}/include)
 
-set(PLEX_LINK_WRAPPED "-arch ${OSX_ARCH} -undefined dynamic_lookup -read_only_relocs suppress -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
+set(PLEX_LINK_WRAPPED "-arch ${TARGET_ARCH} -undefined dynamic_lookup -read_only_relocs suppress -Wl,-alias_list ${root}/xbmc/cores/DllLoader/exports/wrapper_mach_alias")
 
 set(AC_APPLE_UNIVERSAL_BUILD 0)
 set(HAVE_LIBEGL 1)
@@ -164,7 +165,7 @@ set(HAVE_VIDEOTOOLBOXDECODER 1)
 ################## Definitions
 add_definitions(-DTARGET_DARWIN -DTARGET_DARWIN_IOS -DTARGET_DARWIN_IOS_ATV2)
 
-unset(COMPRESS_TEXTURES CACHE)
+#unset(COMPRESS_TEXTURES CACHE)
 unset(ENABLE_DVD_DRIVE CACHE)
 
 include_directories(

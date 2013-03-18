@@ -1,7 +1,7 @@
 set(DEPEND_ARGS osx)
 
 if(TARGET_OSX)
-  if(OSX_ARCH STREQUAL "x86_64")
+  if(TARGET_ARCH STREQUAL "x86_64")
     set(DEPEND_ARGS osx64)
   endif()
 elseif(TARGET_ATV2)
@@ -13,6 +13,19 @@ execute_process(
   WORKING_DIRECTORY ${root}
   RESULT_VARIABLE result
 )
+
+if(DEPEND_ARGS STREQUAL ios)
+  set(NATIVE_ARGS osx)
+  if(NATIVE_ARCH STREQUAL "x86_64")
+    set(NATIVE_ARGS_ARGS osx64)
+  endif(NATIVE_ARCH STREQUAL "x86_64")
+  # we need native depends as well...
+  execute_process(
+    COMMAND ${plexdir}/scripts/fetch-depends.sh ${NATIVE_ARGS}
+    WORKING_DIRECTORY ${root}
+    RESULT_VARIABLE result
+  )
+endif(DEPEND_ARGS STREQUAL ios)  
 
 if(result)
   message(FATAL_ERROR "Fetch depends returned ${result}")
@@ -40,14 +53,23 @@ execute_process(
 
 unset(dependdir CACHE)
 unset(ffmpegdir CACHE)
+unset(dependdir_native CACHE)
+unset(ffmpegdir_native CACHE)
+
 
 if(TARGET_OSX)
-  set(dependdir ${plexdir}/Dependencies/macosx${OSX_SDK_VERSION}_${OSX_ARCH}-xbmc-${DEPEND_HASH} CACHE STRING "path to dependencies")
-  set(ffmpegdir ${plexdir}/Dependencies/macosx${OSX_SDK_VERSION}_${OSX_ARCH}-ffmpeg-${FFMPEG_HASH} CACHE STRING "path to ffmpeg")
+  set(dependdir ${plexdir}/Dependencies/macosx${OSX_SDK_VERSION}_${TARGET_ARCH}-xbmc-${DEPEND_HASH} CACHE STRING "path to dependencies")
+  set(ffmpegdir ${plexdir}/Dependencies/macosx${OSX_SDK_VERSION}_${TARGET_ARCH}-ffmpeg-${FFMPEG_HASH} CACHE STRING "path to ffmpeg")
+  set(dependdir_native ${plexdir}/Dependencies/macosx${OSX_SDK_VERSION}_${NATIVE_ARCH}-xbmc-${DEPEND_HASH} CACHE STRING "path to native dependencies")
+  set(ffmpegdir_native ${plexdir}/Dependencies/macosx${OSX_SDK_VERSION}_${NATIVE_ARCH}-ffmpeg-${FFMPEG_HASH} CACHE STRING "path to native ffmpeg")
 elseif(TARGET_ATV2)
+  set(dependdir_native ${plexdir}/Dependencies/macosx${OSX_SDK_VERSION}_${NATIVE_ARCH}-xbmc-${DEPEND_HASH} CACHE STRING "path to native dependencies")
+  set(ffmpegdir_native ${plexdir}/Dependencies/macosx${OSX_SDK_VERSION}_${NATIVE_ARCH}-ffmpeg-${FFMPEG_HASH} CACHE STRING "path to native ffmpeg")
   set(dependdir ${plexdir}/Dependencies/iphoneos${IPHONEOS_SDK_VERSION}_armv7-xbmc-${DEPEND_HASH} CACHE STRING "path to dependencies")
   set(ffmpegdir ${plexdir}/Dependencies/iphoneos${IPHONEOS_SDK_VERSION}_armv7-ffmpeg-${FFMPEG_HASH} CACHE STRING "path to ffmpeg")
 endif()
+
+message(STATUS "dependdir ${dependdir} native ${dependdir_native}")
 
 if(NOT IS_DIRECTORY ${dependdir})
   message(FATAL_ERROR "Dependency directory ${dependdir} not created!")

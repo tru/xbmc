@@ -251,7 +251,11 @@ int  GetDarwinExecutablePath(char* path, uint32_t *pathsize)
   Class XBMCfrapp = NSClassFromString(@"XBMCATV2Detector");
   if (XBMCfrapp != NULL)
   {
+#ifndef __PLEX__
     pathname = [[NSBundle bundleForClass:XBMCfrapp] pathForResource:@"XBMC" ofType:@""];
+#else
+    pathname = [[NSBundle bundleForClass:XBMCfrapp] pathForResource:@"PlexHomeTheater" ofType:@""];
+#endif
     strcpy(path, [pathname UTF8String]);
     *pathsize = strlen(path);
     //CLog::Log(LOGDEBUG, "DarwinExecutablePath(a) -> %s", path);
