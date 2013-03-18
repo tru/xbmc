@@ -41,7 +41,7 @@ list(APPEND plex_SRCS Resources/Plex.rc2)
 set(Headers PlexTypes.h)
 if(NOT TARGET_COMMON_DARWIN)
   list(REMOVE_ITEM plex_SRCS ./PlexMacUtils.mm)
-endif(NOT TARGET_OSX)
+endif(NOT TARGET_COMMON_DARWIN)
 
 if(NOT TARGET_WIN32)
   list(REMOVE_ITEM plex_SRCS ./MediaCenterLaunchHost.cpp)

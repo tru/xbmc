@@ -38,6 +38,9 @@ execute_process(
   OUTPUT_STRIP_TRAILING_WHITESPACE
 )
 
+unset(dependdir CACHE)
+unset(ffmpegdir CACHE)
+
 if(TARGET_OSX)
   set(dependdir ${plexdir}/Dependencies/macosx${OSX_SDK_VERSION}_${OSX_ARCH}-xbmc-${DEPEND_HASH} CACHE STRING "path to dependencies")
   set(ffmpegdir ${plexdir}/Dependencies/macosx${OSX_SDK_VERSION}_${OSX_ARCH}-ffmpeg-${FFMPEG_HASH} CACHE STRING "path to ffmpeg")
@@ -46,9 +49,14 @@ elseif(TARGET_ATV2)
   set(ffmpegdir ${plexdir}/Dependencies/iphoneos${IPHONEOS_SDK_VERSION}_armv7-ffmpeg-${FFMPEG_HASH} CACHE STRING "path to ffmpeg")
 endif()
 
-if(NOT IS_DIRECTORY ${dependdir} OR NOT IS_DIRECTORY ${ffmpegdir})
-  message(FATAL_ERROR "Couldn't fetch dependencies")
-endif(NOT IS_DIRECTORY ${dependdir} OR NOT IS_DIRECTORY ${ffmpegdir})
+if(NOT IS_DIRECTORY ${dependdir})
+  message(FATAL_ERROR "Dependency directory ${dependdir} not created!")
+endif(NOT IS_DIRECTORY ${dependdir})
+
+if(NOT IS_DIRECTORY ${ffmpegdir})
+  message(FATAL_ERROR "Dependency directory ${ffmpegdir} not created!")
+endif(NOT IS_DIRECTORY ${ffmpegdir})
+
 
 if(NOT TARGET_ATV2)
   file(COPY ${root}/tools/darwin/depends/libcrystalhd/libcrystalhd DESTINATION ${dependdir}/include)
